@@ -20,6 +20,7 @@ class EnvelopeParser:
         self.timing = Timestamps()
         self.body = None
         self.delivery_receipt = False
+        self.confirmed = []
 
     @staticmethod
     def read(envelope_lines):
@@ -69,6 +70,9 @@ class EnvelopeParser:
             elif oneline == "Received a receipt message":
                 retval.delivery_receipt = True
                 retval.body = f"{retval.sender.name} device {retval.sender.device} confirming delivery."
+            elif oneline.startswith("-"):
+                if retval.delivery_receipt:
+                    retval.confirmed.append(int(oneline.split(" ")[1]))
 
         for line in envelope_lines:
             parse_line(line.strip())

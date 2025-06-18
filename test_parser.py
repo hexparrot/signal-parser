@@ -30,6 +30,7 @@ class TestSignalParser(unittest.TestCase):
 
         self.assertEqual(inst.body, "HELLO!")
         self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(len(inst.confirmed), 0)
 
     def test_read_env2(self):
         with open("examples/env2", "r") as f:
@@ -51,6 +52,7 @@ class TestSignalParser(unittest.TestCase):
 
         self.assertEqual(inst.body, "dinnertime please")
         self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(len(inst.confirmed), 0)
 
     def test_read_receipt(self):
         with open("examples/env3", "r") as f:
@@ -72,6 +74,7 @@ class TestSignalParser(unittest.TestCase):
 
         self.assertEqual(inst.body, "Chimichanga device 2 confirming delivery.")
         self.assertEqual(inst.delivery_receipt, True)
+        self.assertTrue(1750196888679 in inst.confirmed)
 
 
 if __name__ == "__main__":
