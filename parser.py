@@ -13,11 +13,22 @@ class Timestamps:
         self.expiration_started = None
 
 
+class Attachment:
+    def __init__(self):
+        self.content_type = None
+        self.upload_timestamp = None
+        self.size = None
+        self.id = None
+        self.filename = None
+        self.filepath = None
+
+
 class EnvelopeParser:
     def __init__(self):
         self.sender = Contact()
         self.recipient = Contact()
         self.quote_author = Contact()
+        self.attachment = Attachment()
         self.timing = Timestamps()
         self.body = None
         self.quote = None
@@ -83,7 +94,22 @@ class EnvelopeParser:
                 retval.body = oneline[6:]
                 is_reading = True
             elif oneline.startswith("Id:"):
-                retval.quoted_timestamp = int(oneline[4:])
+                try:
+                    retval.quoted_timestamp = int(oneline[4:])
+                except ValueError:
+                    retval.attachment.id = oneline[4:]
+            elif oneline.startswith("Content-Type:"):
+                retval.attachment.content_type = oneline.split(" ")[1]
+            elif oneline.startswith("Filename:"):
+                retval.attachment.filename = oneline.split(" ")[1]
+            elif oneline.startswith("Stored plaintext in:"):
+                retval.attachment.filepath = oneline[21:]
+            elif oneline.startswith("Upload timestamp:"):
+                retval.attachment.upload_timestamp = int(oneline[18:].split(" ")[0])
+            elif oneline.startswith("Size:"):
+                retval.attachment.size = int(oneline[6:].split(" ")[0])
+            elif oneline.startswith("Dimensions:"):
+                retval.attachment.dimensions = oneline[12:]
             elif oneline.startswith("Author:"):
                 all_words = shlex.split(oneline)
 
