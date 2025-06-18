@@ -178,15 +178,76 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.sync_receipt, False)
         self.assertEqual(len(inst.confirmed), 0)
 
-        self.assertEqual(inst.attachment.content_type, "image/jpeg")
-        self.assertEqual(inst.attachment.upload_timestamp, 1750197565251)
-        self.assertEqual(inst.attachment.size, 447806)
-        self.assertEqual(inst.attachment.id, "RDJEm5uYXHmlGrcAIMrn.jpeg")
-        self.assertEqual(inst.attachment.filename, "signal-2025-06-17-175925.jpeg")
-        self.assertEqual(inst.attachment.dimensions, "1323x1995")
+        self.assertEqual(inst.attachment[0].content_type, "image/jpeg")
+        self.assertEqual(inst.attachment[0].upload_timestamp, 1750197565251)
+        self.assertEqual(inst.attachment[0].size, 447806)
+        self.assertEqual(inst.attachment[0].id, "RDJEm5uYXHmlGrcAIMrn.jpeg")
+        self.assertEqual(inst.attachment[0].filename, "signal-2025-06-17-175925.jpeg")
+        self.assertEqual(inst.attachment[0].dimensions, "1323x1995")
         self.assertEqual(
-            inst.attachment.filepath,
+            inst.attachment[0].filepath,
             "/home/user/.local/share/signal-cli/attachments/RDJEm5uYXHmlGrcAIMrn.jpeg",
+        )
+
+    def test_recv_attc_2(self):
+        with open("examples/recv_attc_2", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Chimichanga")
+        self.assertEqual(inst.sender.number, "+10123456789")
+        self.assertEqual(inst.sender.device, 1)
+        self.assertEqual(inst.timing.sender_initiated, 1750277331288)
+
+        self.assertEqual(inst.recipient.number, "+19876543210")
+        self.assertIsNone(inst.recipient.name)
+
+        self.assertEqual(inst.timing.server_received, 1750277332528)
+        self.assertEqual(inst.timing.server_delivered, 1750277518230)
+        self.assertIsNone(inst.timing.expiration_started)
+
+        self.assertIsNone(inst.body)
+        self.assertIsNone(inst.quote)
+        self.assertIsNone(inst.quoted_timestamp)
+        self.assertIsNone(inst.quote_author.name)
+        self.assertIsNone(inst.quote_author.number)
+        self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
+        self.assertEqual(len(inst.confirmed), 0)
+
+        self.assertEqual(inst.attachment[0].content_type, "image/jpeg")
+        self.assertEqual(inst.attachment[0].upload_timestamp, 1750277331400)
+        self.assertEqual(inst.attachment[0].size, 558499)
+        self.assertEqual(inst.attachment[0].id, "Yfpc46_PIdBgR6fYw3fB.jpeg")
+        self.assertEqual(inst.attachment[0].filename, "signal-2025-06-18-160851.jpeg")
+        self.assertEqual(inst.attachment[0].dimensions, "1835x2048")
+        self.assertEqual(
+            inst.attachment[0].filepath,
+            "/home/user/.local/share/signal-cli/attachments/Yfpc46_PIdBgR6fYw3fB.jpeg",
+        )
+
+        self.assertEqual(inst.attachment[1].content_type, "image/jpeg")
+        self.assertEqual(inst.attachment[1].upload_timestamp, 1750277331399)
+        self.assertEqual(inst.attachment[1].size, 336253)
+        self.assertEqual(inst.attachment[1].id, "O97z7JNnftBDSZkWqKfK.jpg")
+        self.assertEqual(inst.attachment[1].filename, "IMG_1563.jpg")
+        self.assertEqual(inst.attachment[1].dimensions, "1165x2048")
+        self.assertEqual(
+            inst.attachment[1].filepath,
+            "/home/user/.local/share/signal-cli/attachments/O97z7JNnftBDSZkWqKfK.jpg",
+        )
+
+        self.assertEqual(inst.attachment[2].content_type, "image/jpeg")
+        self.assertEqual(inst.attachment[2].upload_timestamp, 1750277331386)
+        self.assertEqual(inst.attachment[2].size, 364181)
+        self.assertEqual(inst.attachment[2].id, "A6Cp_O_3ScdDCv5F2mLR.jpg")
+        self.assertEqual(inst.attachment[2].filename, "IMG_1567.jpg")
+        self.assertEqual(inst.attachment[2].dimensions, "2048x1224")
+        self.assertEqual(
+            inst.attachment[2].filepath,
+            "/home/user/.local/share/signal-cli/attachments/A6Cp_O_3ScdDCv5F2mLR.jpg",
         )
 
     def test_receipt_delivery_1(self):

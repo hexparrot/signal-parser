@@ -28,7 +28,7 @@ class EnvelopeParser:
         self.sender = Contact()
         self.recipient = Contact()
         self.quote_author = Contact()
-        self.attachment = Attachment()
+        self.attachment = []
         self.timing = Timestamps()
         self.body = None
         self.quote = None
@@ -54,6 +54,8 @@ class EnvelopeParser:
                     is_reading = False
                 else:
                     retval.body = retval.body + "\n" + oneline
+            elif oneline.startswith("- Attachment:"):
+                retval.attachment.append(Attachment())
             elif oneline.startswith("Envelope from:"):
                 all_words = shlex.split(oneline)
 
@@ -97,19 +99,19 @@ class EnvelopeParser:
                 try:
                     retval.quoted_timestamp = int(oneline[4:])
                 except ValueError:
-                    retval.attachment.id = oneline[4:]
+                    retval.attachment[-1].id = oneline[4:]
             elif oneline.startswith("Content-Type:"):
-                retval.attachment.content_type = oneline.split(" ")[1]
+                retval.attachment[-1].content_type = oneline.split(" ")[1]
             elif oneline.startswith("Filename:"):
-                retval.attachment.filename = oneline.split(" ")[1]
+                retval.attachment[-1].filename = oneline.split(" ")[1]
             elif oneline.startswith("Stored plaintext in:"):
-                retval.attachment.filepath = oneline[21:]
+                retval.attachment[-1].filepath = oneline[21:]
             elif oneline.startswith("Upload timestamp:"):
-                retval.attachment.upload_timestamp = int(oneline[18:].split(" ")[0])
+                retval.attachment[-1].upload_timestamp = int(oneline[18:].split(" ")[0])
             elif oneline.startswith("Size:"):
-                retval.attachment.size = int(oneline[6:].split(" ")[0])
+                retval.attachment[-1].size = int(oneline[6:].split(" ")[0])
             elif oneline.startswith("Dimensions:"):
-                retval.attachment.dimensions = oneline[12:]
+                retval.attachment[-1].dimensions = oneline[12:]
             elif oneline.startswith("Author:"):
                 all_words = shlex.split(oneline)
 
