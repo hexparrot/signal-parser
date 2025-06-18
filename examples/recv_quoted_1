@@ -1,0 +1,11 @@
+Envelope from: “Chimichanga” +10123456789 (device: 2) to +19876543210
+Timestamp: 1750199058670 (2025-06-17T22:24:18.670Z)
+Server timestamps: received: 1750199061804 (2025-06-17T22:24:21.804Z) delivered: 1750262044366 (2025-06-18T15:54:04.366Z)
+Sent by unidentified/sealed sender
+Message timestamp: 1750199058670 (2025-06-17T22:24:18.670Z)
+Body: lets check activity history and logs
+With profile key
+Quote:
+  Id: 1750198952954
+  Author: “Willy D” +19876543210
+  Text: how can we track this down?

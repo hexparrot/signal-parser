@@ -17,9 +17,11 @@ class EnvelopeParser:
     def __init__(self):
         self.sender = Contact()
         self.recipient = Contact()
+        self.quote_author = Contact()
         self.timing = Timestamps()
         self.body = None
         self.quote = None
+        self.quoted_timestamp = None
         self.delivery_receipt = False
         self.read_receipt = False
         self.sync_receipt = False
@@ -80,6 +82,16 @@ class EnvelopeParser:
             elif oneline.startswith("Body:"):
                 retval.body = oneline[6:]
                 is_reading = True
+            elif oneline.startswith("Id:"):
+                retval.quoted_timestamp = int(oneline[4:])
+            elif oneline.startswith("Author:"):
+                all_words = shlex.split(oneline)
+
+                sender_name = list(
+                    takewhile(lambda x: "“" in x or "”" in x, all_words[1:])
+                )
+                retval.quote_author.name = " ".join(sender_name)[1:-1]
+                retval.quote_author.number = " ".join(all_words).split(" ")[-1]
             elif oneline.startswith("Text:"):
                 retval.quote = oneline[6:]
             elif oneline == "Is delivery receipt":
