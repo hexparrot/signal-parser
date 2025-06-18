@@ -389,6 +389,36 @@ class TestSignalParser(unittest.TestCase):
         self.assertTrue(1750198522423 in inst.confirmed)
         self.assertEqual(len(inst.confirmed), 3)
 
+    def test_sent_1_str(self):
+        with open("examples/sent_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Willy D (+19876543210) [dev 3]
+To: Chimichanga (+10123456789)
+At: 2025-06-17T21:48:08.6790Z
+Message: HELLO!""",
+        )
+
+    def test_sent_attc_1_str(self):
+        with open("examples/sent_attc_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Willy D (+19876543210) [dev 3]
+To: Chimichanga (+10123456789)
+At: 2025-06-18T20:45:23.4110Z
+Attachment: chars.png (476939 bytes) [image/png]
+Attachment: shinobu.jpg (18502 bytes) [image/jpeg]
+Message: here you go""",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

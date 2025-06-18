@@ -38,6 +38,27 @@ class EnvelopeParser:
         self.sync_receipt = False
         self.confirmed = []
 
+    def __str__(self):
+        from datetime import datetime, timezone
+
+        dt = datetime.fromtimestamp(
+            self.timing.sender_initiated / 1000, tz=timezone.utc
+        )
+        formatted_string = dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")[:-3] + "Z"
+
+        retval = f"""From: {self.sender.name} ({self.sender.number}) [dev {self.sender.device}]
+To: {self.recipient.name} ({self.recipient.number})
+At: {formatted_string}"""
+
+        for i in self.attachment:
+            retval += (
+                f"""\nAttachment: {i.filename} ({i.size} bytes) [{i.content_type}]"""
+            )
+
+        retval += f"""\nMessage: {self.body}"""
+
+        return retval
+
     @staticmethod
     def read(envelope_lines):
         import shlex
