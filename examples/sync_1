@@ -1,0 +1,8 @@
+Envelope from: “Willy D” +19876543210 (device: 3) to +19876543210
+Timestamp: 1750198778363 (2025-06-17T22:19:38.363Z)
+Server timestamps: received: 1750198778607 (2025-06-17T22:19:38.607Z) delivered: 1750262044363 (2025-06-18T15:54:04.363Z)
+Received a sync message
+Received sync read messages list
+- From: “Chimichanga” +10123456789 Message timestamp: 1750198595726 (2025-06-17T22:16:35.726Z)
+- From: “Chimichanga” +10123456789 Message timestamp: 1750198536938 (2025-06-17T22:15:36.938Z)
+- From: “Chimichanga” +10123456789 Message timestamp: 1750198522423 (2025-06-17T22:15:22.423Z)

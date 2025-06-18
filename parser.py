@@ -21,6 +21,7 @@ class EnvelopeParser:
         self.body = None
         self.delivery_receipt = False
         self.read_receipt = False
+        self.sync_receipt = False
         self.confirmed = []
 
     @staticmethod
@@ -83,10 +84,16 @@ class EnvelopeParser:
             elif oneline == "Is read receipt":
                 retval.read_receipt = True
                 retval.body = f"{retval.sender.name} device {retval.sender.device} confirming message read."
+            elif oneline == "Received sync read messages list":
+                retval.sync_receipt = True
+                retval.recipient.name = retval.sender.name
+                retval.body = f"{retval.sender.name} device {retval.sender.device} received message sync."
             elif oneline.startswith("-") and retval.delivery_receipt:
                 retval.confirmed.append(int(oneline.split(" ")[1]))
             elif oneline.startswith("-") and retval.read_receipt:
                 retval.confirmed.append(int(oneline.split(" ")[1]))
+            elif oneline.startswith("- From:") and retval.sync_receipt:
+                retval.confirmed.append(int(oneline.split(" ")[6]))
 
         for line in envelope_lines:
             parse_line(line.strip())

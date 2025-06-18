@@ -31,6 +31,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.body, "HELLO!")
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
         self.assertEqual(len(inst.confirmed), 0)
 
     def test_sent_2(self):
@@ -54,6 +55,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.body, "lets\n\ndo\n\nthis")
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
         self.assertEqual(len(inst.confirmed), 0)
 
     def test_recv_1(self):
@@ -77,6 +79,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.body, "dinnertime please")
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
         self.assertEqual(len(inst.confirmed), 0)
 
     def test_receipt_delivery_1(self):
@@ -100,6 +103,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.body, "Chimichanga device 2 confirming delivery.")
         self.assertEqual(inst.delivery_receipt, True)
         self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
         self.assertTrue(1750196888679 in inst.confirmed)
 
     def test_receipt_read_1(self):
@@ -123,9 +127,37 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.body, "Chimichanga device 2 confirming message read.")
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(inst.read_receipt, True)
+        self.assertEqual(inst.sync_receipt, False)
         self.assertTrue(1750196898889 in inst.confirmed)
         self.assertTrue(1750196888679 in inst.confirmed)
         self.assertEqual(len(inst.confirmed), 2)
+
+    def test_receipt_sync_1(self):
+        with open("examples/sync_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Willy D")
+        self.assertEqual(inst.sender.number, "+19876543210")
+        self.assertEqual(inst.sender.device, 3)
+        self.assertEqual(inst.timing.sender_initiated, 1750198778363)
+
+        self.assertEqual(inst.recipient.number, "+19876543210")
+        self.assertEqual(inst.recipient.name, "Willy D")
+
+        self.assertEqual(inst.timing.server_received, 1750198778607)
+        self.assertEqual(inst.timing.server_delivered, 1750262044363)
+        self.assertIsNone(inst.timing.expiration_started)
+
+        self.assertEqual(inst.body, "Willy D device 3 received message sync.")
+        self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, True)
+        self.assertTrue(1750198595726 in inst.confirmed)
+        self.assertTrue(1750198536938 in inst.confirmed)
+        self.assertTrue(1750198522423 in inst.confirmed)
+        self.assertEqual(len(inst.confirmed), 3)
 
 
 if __name__ == "__main__":
