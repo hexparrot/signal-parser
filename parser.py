@@ -19,6 +19,7 @@ class EnvelopeParser:
         self.recipient = Contact()
         self.timing = Timestamps()
         self.body = None
+        self.quote = None
         self.delivery_receipt = False
         self.read_receipt = False
         self.sync_receipt = False
@@ -75,9 +76,12 @@ class EnvelopeParser:
                     takewhile(lambda x: "“" in x or "”" in x, all_words[1:])
                 )
                 retval.recipient.name = sender_name[0][1:-1]
+                retval.recipient.number = all_words[2]  # overwrite envelope value
             elif oneline.startswith("Body:"):
                 retval.body = oneline[6:]
                 is_reading = True
+            elif oneline.startswith("Text:"):
+                retval.quote = oneline[6:]
             elif oneline == "Is delivery receipt":
                 retval.delivery_receipt = True
                 retval.body = f"{retval.sender.name} device {retval.sender.device} confirming delivery."

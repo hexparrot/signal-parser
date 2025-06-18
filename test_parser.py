@@ -29,6 +29,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.timing.expiration_started, 1750196889007)
 
         self.assertEqual(inst.body, "HELLO!")
+        self.assertIsNone(inst.quote)
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(inst.read_receipt, False)
         self.assertEqual(inst.sync_receipt, False)
@@ -53,6 +54,32 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.timing.expiration_started, 1750197163130)
 
         self.assertEqual(inst.body, "lets\n\ndo\n\nthis")
+        self.assertIsNone(inst.quote)
+        self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
+        self.assertEqual(len(inst.confirmed), 0)
+
+    def test_sent_quoted_1(self):
+        with open("examples/sent_quoted_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Willy D")
+        self.assertEqual(inst.sender.number, "+19876543210")
+        self.assertEqual(inst.sender.device, 3)
+        self.assertEqual(inst.timing.sender_initiated, 1750257737023)
+
+        self.assertEqual(inst.recipient.number, "+10123456789")
+        self.assertEqual(inst.recipient.name, "Chimichanga")
+
+        self.assertEqual(inst.timing.server_received, 1750257737693)
+        self.assertEqual(inst.timing.server_delivered, 1750262048547)
+        self.assertEqual(inst.timing.expiration_started, 1750257737286)
+
+        self.assertEqual(inst.body, "great!")
+        self.assertEqual(inst.quote, "how are you today?")
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(inst.read_receipt, False)
         self.assertEqual(inst.sync_receipt, False)
@@ -77,6 +104,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertIsNone(inst.timing.expiration_started)
 
         self.assertEqual(inst.body, "dinnertime please")
+        self.assertIsNone(inst.quote)
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(inst.read_receipt, False)
         self.assertEqual(inst.sync_receipt, False)
@@ -101,6 +129,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertIsNone(inst.timing.expiration_started)
 
         self.assertEqual(inst.body, "Chimichanga device 2 confirming delivery.")
+        self.assertIsNone(inst.quote)
         self.assertEqual(inst.delivery_receipt, True)
         self.assertEqual(inst.read_receipt, False)
         self.assertEqual(inst.sync_receipt, False)
@@ -125,6 +154,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertIsNone(inst.timing.expiration_started)
 
         self.assertEqual(inst.body, "Chimichanga device 2 confirming message read.")
+        self.assertIsNone(inst.quote)
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(inst.read_receipt, True)
         self.assertEqual(inst.sync_receipt, False)
@@ -151,6 +181,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertIsNone(inst.timing.expiration_started)
 
         self.assertEqual(inst.body, "Willy D device 3 received message sync.")
+        self.assertIsNone(inst.quote)
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(inst.read_receipt, False)
         self.assertEqual(inst.sync_receipt, True)
