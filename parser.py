@@ -20,6 +20,7 @@ class EnvelopeParser:
         self.timing = Timestamps()
         self.body = None
         self.delivery_receipt = False
+        self.read_receipt = False
         self.confirmed = []
 
     @staticmethod
@@ -28,9 +29,17 @@ class EnvelopeParser:
         from itertools import takewhile
 
         retval = EnvelopeParser()
+        is_reading = False
 
         def parse_line(oneline):
-            if oneline.startswith("Envelope from:"):
+            nonlocal is_reading
+
+            if is_reading is True:
+                if oneline == "With profile key":
+                    is_reading = False
+                else:
+                    retval.body = retval.body + "\n" + oneline
+            elif oneline.startswith("Envelope from:"):
                 all_words = shlex.split(oneline)
 
                 sender_name = list(
@@ -67,12 +76,17 @@ class EnvelopeParser:
                 retval.recipient.name = sender_name[0][1:-1]
             elif oneline.startswith("Body:"):
                 retval.body = oneline[6:]
-            elif oneline == "Received a receipt message":
+                is_reading = True
+            elif oneline == "Is delivery receipt":
                 retval.delivery_receipt = True
                 retval.body = f"{retval.sender.name} device {retval.sender.device} confirming delivery."
-            elif oneline.startswith("-"):
-                if retval.delivery_receipt:
-                    retval.confirmed.append(int(oneline.split(" ")[1]))
+            elif oneline == "Is read receipt":
+                retval.read_receipt = True
+                retval.body = f"{retval.sender.name} device {retval.sender.device} confirming message read."
+            elif oneline.startswith("-") and retval.delivery_receipt:
+                retval.confirmed.append(int(oneline.split(" ")[1]))
+            elif oneline.startswith("-") and retval.read_receipt:
+                retval.confirmed.append(int(oneline.split(" ")[1]))
 
         for line in envelope_lines:
             parse_line(line.strip())

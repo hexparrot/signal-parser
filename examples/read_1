@@ -1,9 +1,10 @@
 Envelope from: “Chimichanga” +10123456789 (device: 2) to +19876543210
-Timestamp: 1750196886576 (2025-06-17T21:48:06.576Z)
-Server timestamps: received: 1750196889591 (2025-06-17T21:48:09.591Z) delivered: 1750196935451 (2025-06-17T21:48:55.451Z)
+Timestamp: 1750196901166 (2025-06-17T21:48:21.166Z)
+Server timestamps: received: 1750196904194 (2025-06-17T21:48:24.194Z) delivered: 1750196935451 (2025-06-17T21:48:55.451Z)
 Sent by unidentified/sealed sender
 Received a receipt message
-  When: 1750196886576 (2025-06-17T21:48:06.576Z)
-  Is delivery receipt
+  When: 1750196901166 (2025-06-17T21:48:21.166Z)
+  Is read receipt
   Timestamps:
+  - 1750196898889 (2025-06-17T21:48:18.889Z)
   - 1750196888679 (2025-06-17T21:48:08.679Z)
