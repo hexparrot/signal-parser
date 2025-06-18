@@ -94,6 +94,56 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.sync_receipt, False)
         self.assertEqual(len(inst.confirmed), 0)
 
+    def test_send_attc_1(self):
+        with open("examples/sent_attc_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Willy D")
+        self.assertEqual(inst.sender.number, "+19876543210")
+        self.assertEqual(inst.sender.device, 3)
+        self.assertEqual(inst.timing.sender_initiated, 1750279523411)
+
+        self.assertEqual(inst.recipient.number, "+10123456789")
+        self.assertEqual(inst.recipient.name, "Chimichanga")
+
+        self.assertEqual(inst.timing.server_received, 1750279526170)
+        self.assertEqual(inst.timing.server_delivered, 1750279555712)
+        self.assertEqual(inst.timing.expiration_started, 1750279525777)
+
+        self.assertEqual(inst.body, "here you go")
+        self.assertIsNone(inst.quote)
+        self.assertIsNone(inst.quoted_timestamp)
+        self.assertIsNone(inst.quote_author.name)
+        self.assertIsNone(inst.quote_author.number)
+        self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
+        self.assertEqual(len(inst.confirmed), 0)
+
+        self.assertEqual(inst.attachment[0].content_type, "image/png")
+        self.assertIsNone(inst.attachment[0].upload_timestamp)
+        self.assertEqual(inst.attachment[0].size, 476939)
+        self.assertEqual(inst.attachment[0].id, "g_8PODNoazv-d_BbMFy8.png")
+        self.assertEqual(inst.attachment[0].filename, "chars.png")
+        self.assertEqual(inst.attachment[0].dimensions, "1122x518")
+        self.assertEqual(
+            inst.attachment[0].filepath,
+            "/home/user/.local/share/signal-cli/attachments/g_8PODNoazv-d_BbMFy8.png",
+        )
+
+        self.assertEqual(inst.attachment[1].content_type, "image/jpeg")
+        self.assertIsNone(inst.attachment[1].upload_timestamp)
+        self.assertEqual(inst.attachment[1].size, 18502)
+        self.assertEqual(inst.attachment[1].id, "jPw2mTEdWDJzceFAyq2S.jpg")
+        self.assertEqual(inst.attachment[1].filename, "shinobu.jpg")
+        self.assertEqual(inst.attachment[1].dimensions, "276x183")
+        self.assertEqual(
+            inst.attachment[1].filepath,
+            "/home/user/.local/share/signal-cli/attachments/jPw2mTEdWDJzceFAyq2S.jpg",
+        )
+
     def test_recv_1(self):
         with open("examples/recv_1", "r") as f:
             lines = f.readlines()

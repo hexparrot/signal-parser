@@ -1,0 +1,28 @@
+Envelope from: “Willy D” +19876543210 (device: 3) to +19876543210
+Timestamp: 1750279523411 (2025-06-18T20:45:23.411Z)
+Server timestamps: received: 1750279526170 (2025-06-18T20:45:26.170Z) delivered: 1750279555712 (2025-06-18T20:45:55.712Z)
+Received a sync message
+Received sync sent message
+  To: “Chimichanga” +10123456789
+  Timestamp: 1750279523411 (2025-06-18T20:45:23.411Z)
+  Expiration started at: 1750279525777 (2025-06-18T20:45:25.777Z)
+  Message timestamp: 1750279523411 (2025-06-18T20:45:23.411Z)
+  Body: here you go
+  With profile key
+  Attachments:
+  - Attachment:
+    Content-Type: image/png
+    Type: Pointer
+    Id: g_8PODNoazv-d_BbMFy8.png
+    Filename: chars.png
+    Size: 476939 bytes
+    Dimensions: 1122x518
+    Stored plaintext in: /home/user/.local/share/signal-cli/attachments/g_8PODNoazv-d_BbMFy8.png
+  - Attachment:
+    Content-Type: image/jpeg
+    Type: Pointer
+    Id: jPw2mTEdWDJzceFAyq2S.jpg
+    Filename: shinobu.jpg
+    Size: 18502 bytes
+    Dimensions: 276x183
+    Stored plaintext in: /home/user/.local/share/signal-cli/attachments/jPw2mTEdWDJzceFAyq2S.jpg
