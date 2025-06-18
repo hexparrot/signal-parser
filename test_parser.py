@@ -419,6 +419,50 @@ Attachment: shinobu.jpg (18502 bytes) [image/jpeg]
 Message: here you go""",
         )
 
+    def test_sent_quoted_1_str(self):
+        with open("examples/sent_quoted_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Willy D (+19876543210) [dev 3]
+To: Chimichanga (+10123456789)
+At: 2025-06-18T14:42:17.0230Z
+Quote: Chimichanga said "how are you today?"
+Message: great!""",
+        )
+
+    def test_recv_1_str(self):
+        with open("examples/recv_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Chimichanga (+10123456789) [dev 2]
+To: None (+19876543210)
+At: 2025-06-17T21:48:57.8720Z
+Message: dinnertime please""",
+        )
+
+    def test_recv_quoted_1_str(self):
+        with open("examples/recv_quoted_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Chimichanga (+10123456789) [dev 2]
+To: None (+19876543210)
+At: 2025-06-17T22:24:18.6700Z
+Quote: Willy D said "how can we track this down?"
+Message: lets check activity history and logs""",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
