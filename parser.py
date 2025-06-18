@@ -10,7 +10,7 @@ class Timestamps:
         self.sender_initiated = None
         self.server_received = None
         self.server_delivered = None
-        self.recipient_read = None
+        self.expiration_started = None
 
 
 class EnvelopeParser:
@@ -18,7 +18,8 @@ class EnvelopeParser:
         self.sender = Contact()
         self.recipient = Contact()
         self.timing = Timestamps()
-        self.body = ""
+        self.body = None
+        self.delivery_receipt = False
 
     @staticmethod
     def read(envelope_lines):
@@ -48,7 +49,7 @@ class EnvelopeParser:
             elif oneline.startswith("Timestamp:"):
                 retval.timing.sender_initiated = int(oneline.split(" ")[1])
             elif oneline.startswith("Expiration started at:"):
-                retval.timing.recipient_read = int(oneline.split(" ")[3])
+                retval.timing.expiration_started = int(oneline.split(" ")[3])
             elif oneline.startswith("Server timestamps:"):
                 retval.timing.server_received = int(
                     oneline.split("received: ")[1].split(" ")[0]
@@ -65,6 +66,9 @@ class EnvelopeParser:
                 retval.recipient.name = sender_name[0][1:-1]
             elif oneline.startswith("Body:"):
                 retval.body = oneline[6:]
+            elif oneline == "Received a receipt message":
+                retval.delivery_receipt = True
+                retval.body = f"{retval.sender.name} device {retval.sender.device} confirming delivery."
 
         for line in envelope_lines:
             parse_line(line.strip())
