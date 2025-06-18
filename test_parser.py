@@ -10,8 +10,8 @@ class TestSignalParser(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_read_env1(self):
-        with open("examples/env1", "r") as f:
+    def test_sent_1(self):
+        with open("examples/sent_1", "r") as f:
             lines = f.readlines()
 
         inst = EnvelopeParser.read(lines)
@@ -32,8 +32,8 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(len(inst.confirmed), 0)
 
-    def test_read_env2(self):
-        with open("examples/env2", "r") as f:
+    def test_recv_1(self):
+        with open("examples/recv_1", "r") as f:
             lines = f.readlines()
 
         inst = EnvelopeParser.read(lines)
@@ -54,8 +54,8 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.delivery_receipt, False)
         self.assertEqual(len(inst.confirmed), 0)
 
-    def test_read_receipt(self):
-        with open("examples/env3", "r") as f:
+    def test_receipt_read_1(self):
+        with open("examples/read_1", "r") as f:
             lines = f.readlines()
 
         inst = EnvelopeParser.read(lines)
