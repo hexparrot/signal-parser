@@ -389,6 +389,35 @@ class TestSignalParser(unittest.TestCase):
         self.assertTrue(1750198522423 in inst.confirmed)
         self.assertEqual(len(inst.confirmed), 3)
 
+    def test_receipt_sync_2(self):
+        with open("examples/sync_2", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Willy D")
+        self.assertEqual(inst.sender.number, "+19876543210")
+        self.assertEqual(inst.sender.device, 1)
+        self.assertEqual(inst.timing.sender_initiated, 1750208532150)
+
+        self.assertEqual(inst.recipient.number, "+19876543210")
+        self.assertEqual(inst.recipient.name, "Willy D")
+
+        self.assertEqual(inst.timing.server_received, 1750208532068)
+        self.assertEqual(inst.timing.server_delivered, 1750262044376)
+        self.assertIsNone(inst.timing.expiration_started)
+
+        self.assertEqual(inst.body, "Willy D device 1 received message sync.")
+        self.assertIsNone(inst.quote)
+        self.assertIsNone(inst.quoted_timestamp)
+        self.assertIsNone(inst.quote_author.name)
+        self.assertIsNone(inst.quote_author.number)
+        self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, True)
+        self.assertTrue(1750208530522 in inst.confirmed)
+        self.assertEqual(len(inst.confirmed), 1)
+
     def test_sent_1_str(self):
         with open("examples/sent_1", "r") as f:
             lines = f.readlines()

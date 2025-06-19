@@ -161,9 +161,65 @@ At: {formatted_string}"""
             elif oneline.startswith("-") and retval.read_receipt:
                 retval.confirmed.append(int(oneline.split(" ")[1]))
             elif oneline.startswith("- From:") and retval.sync_receipt:
-                retval.confirmed.append(int(oneline.split(" ")[6]))
+                all_words = shlex.split(oneline)
+
+                sender_name = list(
+                    takewhile(lambda x: "“" in x or "”" in x, all_words[2:])
+                )
+                timestamp_offset = 2 + len(sender_name) + 3
+                retval.confirmed.append(int(all_words[timestamp_offset]))
 
         for line in envelope_lines:
             parse_line(line.strip())
 
         return retval
+
+
+def read_stanzas(filename):
+    with open(filename, "r") as file:
+        lines = [line.rstrip() for line in file.readlines()]
+
+    stanzas = []
+    current_stanza = []
+
+    for line in lines:
+        if line.startswith("Envelope") and current_stanza:
+            stanzas.append(current_stanza)
+            current_stanza = [line]
+        elif line.startswith("Envelope"):
+            current_stanza = [line]
+        else:
+            current_stanza.append(line)
+
+    if current_stanza:
+        stanzas.append(current_stanza)
+
+    return stanzas
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <filename>")
+        sys.exit(1)
+
+    filename = sys.argv[1]
+
+    try:
+        stanza_count = 0
+        for stanza in read_stanzas(filename):
+            stanza_count += 1
+            print(f"=== Stanza {stanza_count} ===")
+            out = EnvelopeParser.read(stanza)
+            print(out)
+            print("-" * 50)
+
+        print(f"Processed {stanza_count} stanzas total.")
+
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error processing file: {e}")
+        sys.exit(1)
