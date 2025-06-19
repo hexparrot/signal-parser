@@ -114,8 +114,8 @@ At: {formatted_string}"""
                 sender_name = list(
                     takewhile(lambda x: "“" in x or "”" in x, all_words[1:])
                 )
-                retval.recipient.name = sender_name[0][1:-1]
-                retval.recipient.number = all_words[2]  # overwrite envelope value
+                retval.recipient.name = " ".join(sender_name)[1:-1]
+                retval.recipient.number = all_words[-1]  # overwrite envelope value
             elif oneline.startswith("Body:"):
                 retval.body = oneline[6:]
                 is_reading = True
@@ -210,7 +210,7 @@ if __name__ == "__main__":
         stanza_count = 0
         for stanza in read_stanzas(filename):
             stanza_count += 1
-            print(f"=== Stanza {stanza_count} ===")
+            print(f"=== Envelope {stanza_count} ===")
             out = EnvelopeParser.read(stanza)
             print(out)
             print("-" * 50)

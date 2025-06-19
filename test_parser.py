@@ -66,6 +66,34 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.sync_receipt, False)
         self.assertEqual(len(inst.confirmed), 0)
 
+    def test_sent_3(self):
+        with open("examples/sent_3", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Willy D")
+        self.assertEqual(inst.sender.number, "+19876543210")
+        self.assertEqual(inst.sender.device, 3)
+        self.assertEqual(inst.timing.sender_initiated, 1750266383657)
+
+        self.assertEqual(inst.recipient.number, "+11213430909")
+        self.assertEqual(inst.recipient.name, "Mohammed (Ali)")
+
+        self.assertEqual(inst.timing.server_received, 1750266384235)
+        self.assertEqual(inst.timing.server_delivered, 1750277517352)
+        self.assertEqual(inst.timing.expiration_started, 1750266384022)
+
+        self.assertEqual(inst.body, "for my group play")
+        self.assertIsNone(inst.quote)
+        self.assertIsNone(inst.quoted_timestamp)
+        self.assertIsNone(inst.quote_author.name)
+        self.assertIsNone(inst.quote_author.number)
+        self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
+        self.assertEqual(len(inst.confirmed), 0)
+
     def test_sent_quoted_1(self):
         with open("examples/sent_quoted_1", "r") as f:
             lines = f.readlines()
