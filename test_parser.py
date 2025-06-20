@@ -531,7 +531,7 @@ Message: lets check activity history and logs""",
             """From: Chimichanga (+10123456789) [dev 2]
 To: None (+19876543210)
 At: 2025-06-17T21:48:06.5760Z
-Delivery: 1750196888679 CONFIRMED""",
+Delivery: 1750196888679""",
         )
 
     def test_receipt_read_1_str(self):
@@ -545,8 +545,8 @@ Delivery: 1750196888679 CONFIRMED""",
             """From: Chimichanga (+10123456789) [dev 2]
 To: None (+19876543210)
 At: 2025-06-17T21:48:21.1660Z
-Read: 1750196898889 CONFIRMED
-Read: 1750196888679 CONFIRMED""",
+Read: 1750196898889
+Read: 1750196888679""",
         )
 
     def test_receipt_sync_1_str(self):
@@ -560,9 +560,9 @@ Read: 1750196888679 CONFIRMED""",
             """From: Willy D (+19876543210) [dev 3]
 To: Willy D (+19876543210)
 At: 2025-06-17T22:19:38.3630Z
-Sync: 1750198595726 CONFIRMED
-Sync: 1750198536938 CONFIRMED
-Sync: 1750198522423 CONFIRMED""",
+Sync: 1750198595726
+Sync: 1750198536938
+Sync: 1750198522423""",
         )
 
 

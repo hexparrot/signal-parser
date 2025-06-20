@@ -63,15 +63,15 @@ At: {formatted_string}"""
 
         if self.delivery_receipt:
             for drts in self.confirmed:
-                retval += f"\nDelivery: {drts} CONFIRMED"
+                retval += f"\nDelivery: {drts}"
 
         if self.read_receipt:
             for rrts in self.confirmed:
-                retval += f"\nRead: {rrts} CONFIRMED"
+                retval += f"\nRead: {rrts}"
 
         if self.sync_receipt:
             for srts in self.confirmed:
-                retval += f"\nSync: {srts} CONFIRMED"
+                retval += f"\nSync: {srts}"
 
         return retval
 
