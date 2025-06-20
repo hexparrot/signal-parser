@@ -58,7 +58,12 @@ At: {formatted_string}"""
                 f"""\nAttachment: {i.filename} ({i.size} bytes) [{i.content_type}]"""
             )
 
-        retval += f"""\nMessage: {self.body}"""
+        if self.body:
+            retval += f"""\nMessage: {self.body}"""
+
+        if self.delivery_receipt:
+            for drts in self.confirmed:
+                retval += f"\nDelivery: {drts} CONFIRMED"
 
         return retval
 
@@ -148,7 +153,6 @@ At: {formatted_string}"""
                 retval.quote = oneline[6:]
             elif oneline == "Is delivery receipt":
                 retval.delivery_receipt = True
-                retval.body = f"{retval.sender.name} device {retval.sender.device} confirming delivery."
             elif oneline == "Is read receipt":
                 retval.read_receipt = True
                 retval.body = f"{retval.sender.name} device {retval.sender.device} confirming message read."

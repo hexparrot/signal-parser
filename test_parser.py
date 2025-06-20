@@ -346,7 +346,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.timing.server_delivered, 1750196935451)
         self.assertIsNone(inst.timing.expiration_started)
 
-        self.assertEqual(inst.body, "Chimichanga device 2 confirming delivery.")
+        self.assertIsNone(inst.body)
         self.assertIsNone(inst.quote)
         self.assertIsNone(inst.quoted_timestamp)
         self.assertIsNone(inst.quote_author.name)
@@ -518,6 +518,20 @@ To: None (+19876543210)
 At: 2025-06-17T22:24:18.6700Z
 Quote: Willy D said "how can we track this down?"
 Message: lets check activity history and logs""",
+        )
+
+    def test_receipt_delivery_1_str(self):
+        with open("examples/delivery_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Chimichanga (+10123456789) [dev 2]
+To: None (+19876543210)
+At: 2025-06-17T21:48:06.5760Z
+Delivery: 1750196888679 CONFIRMED""",
         )
 
 
