@@ -1,0 +1,6 @@
+Envelope from: “Chimichanga” +10123456789 (device: 1) to +19876543210
+Timestamp: 1750395268304 (2025-06-20T04:54:28.304Z)
+Server timestamps: received: 1750395268328 (2025-06-20T04:54:28.328Z) delivered: 1750398074182 (2025-06-20T05:41:14.182Z)
+Sent by unidentified/sealed sender
+Received a call message
+  Offer message: 2944746522025958951, opaque length: 76

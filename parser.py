@@ -37,7 +37,9 @@ class EnvelopeParser:
         self.read_receipt = False
         self.sync_receipt = False
         self.call_receipt = False
+        self.answer_receipt = False
         self.hangup_receipt = False
+        self.offer_receipt = False
         self.ice_receipt = False
         self.confirmed = []
 
@@ -51,8 +53,17 @@ class EnvelopeParser:
 
         retval = f"""From: {self.sender.name} ({self.sender.number}) [dev {self.sender.device}]"""
 
-        if self.call_receipt and not self.hangup_receipt:
-            retval += f"""\nTo: {self.recipient.name} ({self.recipient.number}) [dev {self.recipient.device}]"""
+        if self.call_receipt:
+            if self.answer_receipt:
+                retval += f"""\nTo: {self.recipient.name} ({self.recipient.number}) [dev {self.recipient.device}]"""
+            elif self.ice_receipt:
+                retval += f"""\nTo: {self.recipient.name} ({self.recipient.number}) [dev {self.recipient.device}]"""
+            elif self.offer_receipt:
+                retval += f"""\nTo: {self.recipient.name} ({self.recipient.number})"""
+            elif self.hangup_receipt:
+                retval += f"""\nTo: {self.recipient.name} ({self.recipient.number})"""
+            else:
+                retval += f"""\nTo: {self.recipient.name} ({self.recipient.number})"""
         else:
             retval += f"""\nTo: {self.recipient.name} ({self.recipient.number})"""
 
@@ -84,11 +95,12 @@ class EnvelopeParser:
         if self.call_receipt:
             if self.ice_receipt:
                 retval += f"\nCall: ONGOING"
+            elif self.offer_receipt:
+                retval += f"\nCall: OFFERING"
+            elif self.hangup_receipt:
+                retval += f"\nCall: ENDED"
             else:
-                if self.hangup_receipt:
-                    retval += f"\nCall: ENDED"
-                else:
-                    retval += f"\nCall: ANSWERED"
+                retval += f"\nCall: ANSWERED"
 
         return retval
 
@@ -186,8 +198,12 @@ class EnvelopeParser:
                 retval.call_receipt = True
             elif oneline == "Ice update messages:":
                 retval.ice_receipt = True
+            elif oneline.startswith("Answer message:"):
+                retval.answer_receipt = True
             elif oneline.startswith("Hangup message:"):
                 retval.hangup_receipt = True
+            elif oneline.startswith("Offer message:"):
+                retval.offer_receipt = True
             elif oneline == "Received sync read messages list":
                 retval.sync_receipt = True
                 retval.recipient.name = retval.sender.name
