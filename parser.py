@@ -69,6 +69,10 @@ At: {formatted_string}"""
             for rrts in self.confirmed:
                 retval += f"\nRead: {rrts} CONFIRMED"
 
+        if self.sync_receipt:
+            for srts in self.confirmed:
+                retval += f"\nSync: {srts} CONFIRMED"
+
         return retval
 
     @staticmethod
@@ -162,7 +166,6 @@ At: {formatted_string}"""
             elif oneline == "Received sync read messages list":
                 retval.sync_receipt = True
                 retval.recipient.name = retval.sender.name
-                retval.body = f"{retval.sender.name} device {retval.sender.device} received message sync."
             elif oneline.startswith("-") and retval.delivery_receipt:
                 retval.confirmed.append(int(oneline.split(" ")[1]))
             elif oneline.startswith("-") and retval.read_receipt:

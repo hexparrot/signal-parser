@@ -404,7 +404,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.timing.server_delivered, 1750262044363)
         self.assertIsNone(inst.timing.expiration_started)
 
-        self.assertEqual(inst.body, "Willy D device 3 received message sync.")
+        self.assertIsNone(inst.body)
         self.assertIsNone(inst.quote)
         self.assertIsNone(inst.quoted_timestamp)
         self.assertIsNone(inst.quote_author.name)
@@ -435,7 +435,7 @@ class TestSignalParser(unittest.TestCase):
         self.assertEqual(inst.timing.server_delivered, 1750262044376)
         self.assertIsNone(inst.timing.expiration_started)
 
-        self.assertEqual(inst.body, "Willy D device 1 received message sync.")
+        self.assertIsNone(inst.body)
         self.assertIsNone(inst.quote)
         self.assertIsNone(inst.quoted_timestamp)
         self.assertIsNone(inst.quote_author.name)
@@ -547,6 +547,22 @@ To: None (+19876543210)
 At: 2025-06-17T21:48:21.1660Z
 Read: 1750196898889 CONFIRMED
 Read: 1750196888679 CONFIRMED""",
+        )
+
+    def test_receipt_sync_1_str(self):
+        with open("examples/sync_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Willy D (+19876543210) [dev 3]
+To: Willy D (+19876543210)
+At: 2025-06-17T22:19:38.3630Z
+Sync: 1750198595726 CONFIRMED
+Sync: 1750198536938 CONFIRMED
+Sync: 1750198522423 CONFIRMED""",
         )
 
 
