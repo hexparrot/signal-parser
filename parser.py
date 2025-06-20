@@ -48,9 +48,13 @@ class EnvelopeParser:
         )
         formatted_string = dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")[:-3] + "Z"
 
-        retval = f"""From: {self.sender.name} ({self.sender.number}) [dev {self.sender.device}]
-To: {self.recipient.name} ({self.recipient.number})
-At: {formatted_string}"""
+        retval = f"""From: {self.sender.name} ({self.sender.number}) [dev {self.sender.device}]"""
+
+        if self.call_receipt:
+            retval += f"""\nTo: {self.recipient.name} ({self.recipient.number}) [dev {self.recipient.device}]"""
+        else:
+            retval += f"""\nTo: {self.recipient.name} ({self.recipient.number})"""
+        retval += f"""\nAt: {formatted_string}"""
 
         if self.quote:
             retval += f'''\nQuote: {self.quote_author.name} said \"{self.quote}\"'''
@@ -74,6 +78,12 @@ At: {formatted_string}"""
         if self.sync_receipt:
             for srts in self.confirmed:
                 retval += f"\nSync: {srts}"
+
+        if self.call_receipt:
+            if self.ice_receipt:
+                retval += f"\nCall: ONGOING"
+            else:
+                retval += f"\nCall: ANSWERED"
 
         return retval
 

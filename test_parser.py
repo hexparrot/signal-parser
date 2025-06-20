@@ -634,6 +634,34 @@ Sync: 1750198536938
 Sync: 1750198522423""",
         )
 
+    def test_receipt_call_1_str(self):
+        with open("examples/call_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Chimichanga (+10123456789) [dev 2]
+To: None (+19876543210) [dev 1]
+At: 2025-06-20T04:49:37.2590Z
+Call: ANSWERED""",
+        )
+
+    def test_receipt_call_2_str(self):
+        with open("examples/call_2", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Chimichanga (+10123456789) [dev 2]
+To: None (+19876543210) [dev 1]
+At: 2025-06-20T04:49:37.2880Z
+Call: ONGOING""",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
