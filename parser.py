@@ -37,6 +37,7 @@ class EnvelopeParser:
         self.read_receipt = False
         self.sync_receipt = False
         self.call_receipt = False
+        self.hangup_receipt = False
         self.ice_receipt = False
         self.confirmed = []
 
@@ -50,10 +51,11 @@ class EnvelopeParser:
 
         retval = f"""From: {self.sender.name} ({self.sender.number}) [dev {self.sender.device}]"""
 
-        if self.call_receipt:
+        if self.call_receipt and not self.hangup_receipt:
             retval += f"""\nTo: {self.recipient.name} ({self.recipient.number}) [dev {self.recipient.device}]"""
         else:
             retval += f"""\nTo: {self.recipient.name} ({self.recipient.number})"""
+
         retval += f"""\nAt: {formatted_string}"""
 
         if self.quote:
@@ -83,7 +85,10 @@ class EnvelopeParser:
             if self.ice_receipt:
                 retval += f"\nCall: ONGOING"
             else:
-                retval += f"\nCall: ANSWERED"
+                if self.hangup_receipt:
+                    retval += f"\nCall: ENDED"
+                else:
+                    retval += f"\nCall: ANSWERED"
 
         return retval
 
@@ -181,6 +186,8 @@ class EnvelopeParser:
                 retval.call_receipt = True
             elif oneline == "Ice update messages:":
                 retval.ice_receipt = True
+            elif oneline.startswith("Hangup message:"):
+                retval.hangup_receipt = True
             elif oneline == "Received sync read messages list":
                 retval.sync_receipt = True
                 retval.recipient.name = retval.sender.name

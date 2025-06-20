@@ -1,0 +1,6 @@
+Envelope from: “Chimichanga” +10123456789 (device: 1) to +19876543210
+Timestamp: 1750395271133 (2025-06-20T04:54:31.133Z)
+Server timestamps: received: 1750395271245 (2025-06-20T04:54:31.245Z) delivered: 1750398074243 (2025-06-20T05:41:14.243Z)
+Sent by unidentified/sealed sender
+Received a call message
+  Hangup message: 2944746522025958951

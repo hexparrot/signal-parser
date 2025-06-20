@@ -515,6 +515,38 @@ class TestSignalParser(unittest.TestCase):
         self.assertTrue(142 in inst.confirmed)
         self.assertEqual(len(inst.confirmed), 7)
 
+    def test_call_3(self):
+        with open("examples/call_3", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Chimichanga")
+        self.assertEqual(inst.sender.number, "+10123456789")
+        self.assertEqual(inst.sender.device, 1)
+        self.assertEqual(inst.timing.sender_initiated, 1750395271133)
+
+        self.assertEqual(inst.recipient.number, "+19876543210")
+        self.assertIsNone(inst.recipient.name)
+        self.assertIsNone(inst.recipient.device)
+
+        self.assertEqual(inst.timing.server_received, 1750395271245)
+        self.assertEqual(inst.timing.server_delivered, 1750398074243)
+        self.assertIsNone(inst.timing.expiration_started)
+
+        self.assertIsNone(inst.body)
+        self.assertIsNone(inst.quote)
+        self.assertIsNone(inst.quoted_timestamp)
+        self.assertIsNone(inst.quote_author.name)
+        self.assertIsNone(inst.quote_author.number)
+        self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
+        self.assertEqual(inst.call_receipt, True)
+        self.assertEqual(inst.ice_receipt, False)
+        self.assertEqual(inst.hangup_receipt, True)
+        self.assertEqual(len(inst.confirmed), 0)
+
     def test_sent_1_str(self):
         with open("examples/sent_1", "r") as f:
             lines = f.readlines()
@@ -660,6 +692,20 @@ Call: ANSWERED""",
 To: None (+19876543210) [dev 1]
 At: 2025-06-20T04:49:37.2880Z
 Call: ONGOING""",
+        )
+
+    def test_receipt_call_3_str(self):
+        with open("examples/call_3", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Chimichanga (+10123456789) [dev 1]
+To: None (+19876543210)
+At: 2025-06-20T04:54:31.1330Z
+Call: ENDED""",
         )
 
 
