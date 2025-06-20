@@ -36,6 +36,8 @@ class EnvelopeParser:
         self.delivery_receipt = False
         self.read_receipt = False
         self.sync_receipt = False
+        self.call_receipt = False
+        self.ice_receipt = False
         self.confirmed = []
 
     def __str__(self):
@@ -159,10 +161,16 @@ At: {formatted_string}"""
                 retval.quote_author.number = " ".join(all_words).split(" ")[-1]
             elif oneline.startswith("Text:"):
                 retval.quote = oneline[6:]
+            elif oneline.startswith("Destination device id:"):
+                retval.recipient.device = int(oneline.split(": ")[1])
             elif oneline == "Is delivery receipt":
                 retval.delivery_receipt = True
             elif oneline == "Is read receipt":
                 retval.read_receipt = True
+            elif oneline == "Received a call message":
+                retval.call_receipt = True
+            elif oneline == "Ice update messages:":
+                retval.ice_receipt = True
             elif oneline == "Received sync read messages list":
                 retval.sync_receipt = True
                 retval.recipient.name = retval.sender.name
@@ -170,6 +178,8 @@ At: {formatted_string}"""
                 retval.confirmed.append(int(oneline.split(" ")[1]))
             elif oneline.startswith("-") and retval.read_receipt:
                 retval.confirmed.append(int(oneline.split(" ")[1]))
+            elif oneline.startswith("-") and retval.ice_receipt:
+                retval.confirmed.append(int(oneline.split(" ")[4]))
             elif oneline.startswith("- From:") and retval.sync_receipt:
                 all_words = shlex.split(oneline)
 

@@ -446,6 +446,75 @@ class TestSignalParser(unittest.TestCase):
         self.assertTrue(1750208530522 in inst.confirmed)
         self.assertEqual(len(inst.confirmed), 1)
 
+    def test_call_1(self):
+        with open("examples/call_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Chimichanga")
+        self.assertEqual(inst.sender.number, "+10123456789")
+        self.assertEqual(inst.sender.device, 2)
+        self.assertEqual(inst.timing.sender_initiated, 1750394977259)
+
+        self.assertEqual(inst.recipient.number, "+19876543210")
+        self.assertIsNone(inst.recipient.name)
+        self.assertEqual(inst.recipient.device, 1)
+
+        self.assertEqual(inst.timing.server_received, 1750394977418)
+        self.assertEqual(inst.timing.server_delivered, 1750398074057)
+        self.assertIsNone(inst.timing.expiration_started)
+
+        self.assertIsNone(inst.body)
+        self.assertIsNone(inst.quote)
+        self.assertIsNone(inst.quoted_timestamp)
+        self.assertIsNone(inst.quote_author.name)
+        self.assertIsNone(inst.quote_author.number)
+        self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
+        self.assertEqual(inst.call_receipt, True)
+        self.assertEqual(inst.ice_receipt, False)
+        self.assertEqual(len(inst.confirmed), 0)
+
+    def test_call_2(self):
+        with open("examples/call_2", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Chimichanga")
+        self.assertEqual(inst.sender.number, "+10123456789")
+        self.assertEqual(inst.sender.device, 2)
+        self.assertEqual(inst.timing.sender_initiated, 1750394977288)
+
+        self.assertEqual(inst.recipient.number, "+19876543210")
+        self.assertIsNone(inst.recipient.name)
+        self.assertEqual(inst.recipient.device, 1)
+
+        self.assertEqual(inst.timing.server_received, 1750394977445)
+        self.assertEqual(inst.timing.server_delivered, 1750398074118)
+        self.assertIsNone(inst.timing.expiration_started)
+
+        self.assertIsNone(inst.body)
+        self.assertIsNone(inst.quote)
+        self.assertIsNone(inst.quoted_timestamp)
+        self.assertIsNone(inst.quote_author.name)
+        self.assertIsNone(inst.quote_author.number)
+        self.assertEqual(inst.delivery_receipt, False)
+        self.assertEqual(inst.read_receipt, False)
+        self.assertEqual(inst.sync_receipt, False)
+        self.assertEqual(inst.call_receipt, True)
+        self.assertEqual(inst.ice_receipt, True)
+        self.assertTrue(107 in inst.confirmed)
+        self.assertTrue(134 in inst.confirmed)
+        self.assertTrue(132 in inst.confirmed)
+        self.assertTrue(142 in inst.confirmed)
+        self.assertTrue(166 in inst.confirmed)
+        self.assertTrue(165 in inst.confirmed)
+        self.assertTrue(142 in inst.confirmed)
+        self.assertEqual(len(inst.confirmed), 7)
+
     def test_sent_1_str(self):
         with open("examples/sent_1", "r") as f:
             lines = f.readlines()
