@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 class Contact:
     def __init__(self):
         self.number = None
