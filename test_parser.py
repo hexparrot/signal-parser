@@ -328,6 +328,48 @@ class TestSignalParser(unittest.TestCase):
             "/home/user/.local/share/signal-cli/attachments/A6Cp_O_3ScdDCv5F2mLR.jpg",
         )
 
+    def test_recv_attc_3(self):
+        # this one might not have been sent from the gallery
+        # and thus does not have a filename, because it was
+        # probably used straight from the signal photo button
+        with open("examples/recv_attc_3", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Chimichanga")
+        self.assertEqual(inst.sender.number, "+10123456789")
+        self.assertEqual(inst.sender.device, 2)
+        self.assertEqual(inst.timing.sender_initiated, 1750647297283)
+
+        self.assertEqual(inst.recipient.number, "+19876543210")
+        self.assertIsNone(inst.recipient.name)
+
+        self.assertEqual(inst.timing.server_received, 1750647299097)
+        self.assertEqual(inst.timing.server_delivered, 1750664152937)
+        self.assertIsNone(inst.timing.expiration_started)
+
+        self.assertEqual(inst.body, "proof I won at least one tonight lol")
+        self.assertIsNone(inst.quote)
+        self.assertIsNone(inst.quoted_timestamp)
+        self.assertIsNone(inst.quote_author.name)
+        self.assertIsNone(inst.quote_author.number)
+        self.assertEqual(inst.receipt.delivery, False)
+        self.assertEqual(inst.receipt.read, False)
+        self.assertEqual(inst.receipt.sync, False)
+        self.assertEqual(len(inst.confirmed), 0)
+
+        self.assertEqual(inst.attachment[0].content_type, "image/jpeg")
+        self.assertEqual(inst.attachment[0].upload_timestamp, 1750647297486)
+        self.assertEqual(inst.attachment[0].size, 98000)
+        self.assertEqual(inst.attachment[0].id, "R8KZ1NEtpIrLdBASGOha.jpg")
+        self.assertIsNone(inst.attachment[0].filename)
+        self.assertEqual(inst.attachment[0].dimensions, "2042x1182")
+        self.assertEqual(
+            inst.attachment[0].filepath,
+            "/home/user/.local/share/signal-cli/attachments/R8KZ1NEtpIrLdBASGOha.jpg",
+        )
+
     def test_receipt_delivery_1(self):
         with open("examples/delivery_1", "r") as f:
             lines = f.readlines()
@@ -609,6 +651,21 @@ At: 2025-06-18T20:45:23.4110Z
 Attachment: chars.png (476939 bytes) [image/png]
 Attachment: shinobu.jpg (18502 bytes) [image/jpeg]
 Message: here you go""",
+        )
+
+    def test_recv_attc_3_str(self):
+        with open("examples/recv_attc_3", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Chimichanga (+10123456789) [dev 2]
+To: None (+19876543210)
+At: 2025-06-23T02:54:57.2830Z
+Attachment: R8KZ1NEtpIrLdBASGOha.jpg (98000 bytes) [image/jpeg]
+Message: proof I won at least one tonight lol""",
         )
 
     def test_sent_quoted_1_str(self):

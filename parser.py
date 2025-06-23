@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+
 class Contact:
     def __init__(self):
         self.number = None
@@ -80,9 +81,9 @@ class EnvelopeParser:
             retval += f'''\nQuote: {self.quote_author.name} said \"{self.quote}\"'''
 
         for i in self.attachment:
-            retval += (
-                f"""\nAttachment: {i.filename} ({i.size} bytes) [{i.content_type}]"""
-            )
+            fn = i.filename or i.id
+
+            retval += f"""\nAttachment: {fn} ({i.size} bytes) [{i.content_type}]"""
 
         if self.body:
             retval += f"""\nMessage: {self.body}"""

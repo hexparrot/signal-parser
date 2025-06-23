@@ -1,0 +1,16 @@
+Envelope from: “Chimichanga” +10123456789 (device: 2) to +19876543210
+Timestamp: 1750647297283 (2025-06-23T02:54:57.283Z)
+Server timestamps: received: 1750647299097 (2025-06-23T02:54:59.097Z) delivered: 1750664152937 (2025-06-23T07:35:52.937Z)
+Sent by unidentified/sealed sender
+Message timestamp: 1750647297283 (2025-06-23T02:54:57.283Z)
+Body: proof I won at least one tonight lol
+With profile key
+Attachments:
+- Attachment:
+  Content-Type: image/jpeg
+  Type: Pointer
+  Id: R8KZ1NEtpIrLdBASGOha.jpg
+  Upload timestamp: 1750647297486 (2025-06-23T02:54:57.486Z)
+  Size: 98000 bytes
+  Dimensions: 2042x1182
+  Stored plaintext in: /home/user/.local/share/signal-cli/attachments/R8KZ1NEtpIrLdBASGOha.jpg
