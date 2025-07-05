@@ -1,0 +1,15 @@
+Envelope from: “Willy D” +19876543210 (device: 3) to +10123456789
+Timestamp: 1750197162897 (2025-06-17T21:52:42.897Z)
+Server timestamps: received: 1750197163285 (2025-06-17T21:52:43.285Z) delivered: 1750197168902 (2025-06-17T21:52:48.902Z)
+Received a sync message
+Received sync sent message
+  To: “Chimichanga” +10123456789
+  Timestamp: 1750197162897 (2025-06-17T21:52:42.897Z)
+  Expiration started at: 1750197163130 (2025-06-17T21:52:43.130Z)
+  Message timestamp: 1750197162897 (2025-06-17T21:52:42.897Z)
+  Body: lets
+
+do
+
+this
+  With profile key

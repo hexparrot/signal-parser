@@ -1,0 +1,14 @@
+Envelope from: “Chimichanga” +10123456789 (device: 2) to +19876543210
+Timestamp: 1750394977288 (2025-06-20T04:49:37.288Z)
+Server timestamps: received: 1750394977445 (2025-06-20T04:49:37.445Z) delivered: 1750398074118 (2025-06-20T05:41:14.118Z)
+Sent by unidentified/sealed sender
+Received a call message
+  Destination device id: 1
+  Ice update messages:
+  - -1619686232216414847, opaque length: 107
+  - -1619686232216414847, opaque length: 134
+  - -1619686232216414847, opaque length: 132
+  - -1619686232216414847, opaque length: 142
+  - -1619686232216414847, opaque length: 166
+  - -1619686232216414847, opaque length: 165
+  - -1619686232216414847, opaque length: 142

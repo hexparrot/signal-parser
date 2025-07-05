@@ -1,0 +1,11 @@
+Envelope from: “Willy D” +19876543210 (device: 3) to +19876543210
+Timestamp: 1750266383657 (2025-06-18T17:06:23.657Z)
+Server timestamps: received: 1750266384235 (2025-06-18T17:06:24.235Z) delivered: 1750277517352 (2025-06-18T20:11:57.352Z)
+Received a sync message
+Received sync sent message
+  To: “Mohammed (Ali)” +11213430909
+  Timestamp: 1750266383657 (2025-06-18T17:06:23.657Z)
+  Expiration started at: 1750266384022 (2025-06-18T17:06:24.022Z)
+  Message timestamp: 1750266383657 (2025-06-18T17:06:23.657Z)
+  Body: for my group play
+  With profile key

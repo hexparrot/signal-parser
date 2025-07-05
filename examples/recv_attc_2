@@ -1,0 +1,34 @@
+Envelope from: “Chimichanga” +10123456789 (device: 1) to +19876543210
+Timestamp: 1750277331288 (2025-06-18T20:08:51.288Z)
+Server timestamps: received: 1750277332528 (2025-06-18T20:08:52.528Z) delivered: 1750277518230 (2025-06-18T20:11:58.230Z)
+Sent by unidentified/sealed sender
+Message timestamp: 1750277331288 (2025-06-18T20:08:51.288Z)
+With profile key
+Attachments:
+- Attachment:
+  Content-Type: image/jpeg
+  Type: Pointer
+  Id: Yfpc46_PIdBgR6fYw3fB.jpeg
+  Upload timestamp: 1750277331400 (2025-06-18T20:08:51.400Z)
+  Filename: signal-2025-06-18-160851.jpeg
+  Size: 558499 bytes
+  Dimensions: 1835x2048
+  Stored plaintext in: /home/user/.local/share/signal-cli/attachments/Yfpc46_PIdBgR6fYw3fB.jpeg
+- Attachment:
+  Content-Type: image/jpeg
+  Type: Pointer
+  Id: O97z7JNnftBDSZkWqKfK.jpg
+  Upload timestamp: 1750277331399 (2025-06-18T20:08:51.399Z)
+  Filename: IMG_1563.jpg
+  Size: 336253 bytes
+  Dimensions: 1165x2048
+  Stored plaintext in: /home/user/.local/share/signal-cli/attachments/O97z7JNnftBDSZkWqKfK.jpg
+- Attachment:
+  Content-Type: image/jpeg
+  Type: Pointer
+  Id: A6Cp_O_3ScdDCv5F2mLR.jpg
+  Upload timestamp: 1750277331386 (2025-06-18T20:08:51.386Z)
+  Filename: IMG_1567.jpg
+  Size: 364181 bytes
+  Dimensions: 2048x1224
+  Stored plaintext in: /home/user/.local/share/signal-cli/attachments/A6Cp_O_3ScdDCv5F2mLR.jpg
