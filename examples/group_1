@@ -1,0 +1,13 @@
+Envelope from: “Willy D” +10123456789 (device: 1) to +19876543210
+Timestamp: 1769799438145 (2026-01-30T18:57:18.145Z)
+Server timestamps: received: 1769799437284 (2026-01-30T18:57:17.284Z) delivered: 1770399157758 (2026-02-06T17:32:37.758Z)
+Received a sync message
+Received sync sent message
+  To: “Chimichanga” +19876543210, “Burrito” 00112ae9-1f65-5381-a4f5-911028faf302, “Taco” +1443322110
+  Timestamp: 1769799438145 (2026-01-30T18:57:18.145Z)
+  Message timestamp: 1769799438145 (2026-01-30T18:57:18.145Z)
+  Group info:
+    Id: QbgrOvpfti8L5bcSDteyYBGiglqvjhlnFq9QnHJ8/fY=
+    Name: mealtime
+    Revision: 6
+    Type: UPDATE

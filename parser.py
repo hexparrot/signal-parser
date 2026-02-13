@@ -24,6 +24,15 @@ class Attachment:
         self.id = None
         self.filename = None
         self.filepath = None
+        self.dimensions = None
+
+
+class GroupInfo:
+    def __init__(self):
+        self.id = None
+        self.name = None
+        self.revision = None
+        self.type = None
 
 
 class Receipt:
@@ -46,6 +55,7 @@ class EnvelopeParser:
         self.receipt = Receipt()
         self.attachment = []
         self.timing = Timestamps()
+        self.group = None
         self.body = None
         self.quote = None
         self.quoted_timestamp = None
@@ -76,6 +86,9 @@ class EnvelopeParser:
             retval += f"""\nTo: {self.recipient.name} ({self.recipient.number})"""
 
         retval += f"""\nAt: {formatted_string}"""
+
+        if self.group:
+            retval += f"""\nGroup: {self.group.name} (rev {self.group.revision}, {self.group.type})"""
 
         if self.quote:
             retval += f'''\nQuote: {self.quote_author.name} said \"{self.quote}\"'''
@@ -114,7 +127,7 @@ class EnvelopeParser:
 
     def to_json(self):
         def to_dict():
-            return {
+            d = {
                 "sender": {
                     "name": self.sender.name,
                     "number": self.sender.number,
@@ -144,7 +157,16 @@ class EnvelopeParser:
                     "sync": self.receipt.sync,
                 },
                 "confirmed": list(self.confirmed),
+                "group": None,
             }
+            if self.group:
+                d["group"] = {
+                    "id": self.group.id,
+                    "name": self.group.name,
+                    "revision": self.group.revision,
+                    "type": self.group.type,
+                }
+            return d
 
         import json
 
@@ -157,18 +179,26 @@ class EnvelopeParser:
 
         retval = EnvelopeParser()
         is_reading = False
+        section = None  # tracks: None, "group_info", "attachment"
+        original_recipient = None
+        has_group = False
 
         def parse_line(oneline):
-            nonlocal is_reading
+            nonlocal is_reading, section, original_recipient, has_group
 
             if is_reading is True:
                 if oneline == "With profile key":
                     is_reading = False
                 else:
                     retval.body = retval.body + "\n" + oneline
+            elif oneline == "Group info:":
+                section = "group_info"
+                retval.group = GroupInfo()
             elif oneline.startswith("- Attachment:"):
+                section = "attachment"
                 retval.attachment.append(Attachment())
             elif oneline.startswith("Envelope from:"):
+                section = None
                 all_words = shlex.split(oneline)
 
                 sender_name = list(
@@ -185,6 +215,7 @@ class EnvelopeParser:
                 retval.sender.device = int(all_words[device_offset].strip(")"))
 
                 retval.recipient.number = all_words[-1]
+                original_recipient = all_words[-1]
             elif oneline.startswith("Timestamp:"):
                 retval.timing.sender_initiated = int(oneline.split(" ")[1])
             elif oneline.startswith("Expiration started at:"):
@@ -205,13 +236,26 @@ class EnvelopeParser:
                 retval.recipient.name = " ".join(sender_name)[1:-1]
                 retval.recipient.number = all_words[-1]  # overwrite envelope value
             elif oneline.startswith("Body:"):
+                section = None
                 retval.body = oneline[6:]
                 is_reading = True
             elif oneline.startswith("Id:"):
-                try:
-                    retval.quoted_timestamp = int(oneline[4:])
-                except ValueError:
+                if section == "group_info":
+                    has_group = True
+                    retval.group.id = oneline[4:]
+                elif section == "attachment":
                     retval.attachment[-1].id = oneline[4:]
+                else:
+                    try:
+                        retval.quoted_timestamp = int(oneline[4:])
+                    except ValueError:
+                        pass
+            elif oneline.startswith("Name:") and section == "group_info":
+                retval.group.name = oneline[6:]
+            elif oneline.startswith("Revision:") and section == "group_info":
+                retval.group.revision = int(oneline[10:])
+            elif oneline.startswith("Type:") and section == "group_info":
+                retval.group.type = oneline[6:]
             elif oneline.startswith("Content-Type:"):
                 retval.attachment[-1].content_type = oneline.split(" ")[1]
             elif oneline.startswith("Filename:"):
@@ -225,6 +269,7 @@ class EnvelopeParser:
             elif oneline.startswith("Dimensions:"):
                 retval.attachment[-1].dimensions = oneline[12:]
             elif oneline.startswith("Author:"):
+                section = None
                 all_words = shlex.split(oneline)
 
                 sender_name = list(
@@ -237,10 +282,13 @@ class EnvelopeParser:
             elif oneline.startswith("Destination device id:"):
                 retval.recipient.device = int(oneline.split(": ")[1])
             elif oneline == "Is delivery receipt":
+                section = None
                 retval.receipt.delivery = True
             elif oneline == "Is read receipt":
+                section = None
                 retval.receipt.read = True
             elif oneline == "Received a call message":
+                section = None
                 retval.receipt.call = True
             elif oneline == "Ice update messages:":
                 retval.receipt.ice = True
@@ -251,6 +299,7 @@ class EnvelopeParser:
             elif oneline.startswith("Offer message:"):
                 retval.receipt.offer = True
             elif oneline == "Received sync read messages list":
+                section = None
                 retval.receipt.sync = True
                 retval.recipient.name = retval.sender.name
             elif oneline.startswith("-") and retval.receipt.delivery:
@@ -270,6 +319,8 @@ class EnvelopeParser:
 
         for line in envelope_lines:
             parse_line(line.strip())
+            if has_group:
+                retval.recipient.number = original_recipient
 
         return retval
 
@@ -325,8 +376,14 @@ if __name__ == "__main__":
             print(f"Processed {len(parsed)} stanzas total.")
 
     except FileNotFoundError:
-        print(f"Error: File '{args.filename}' not found.", file=sys.stderr)
+        print(f"Error: File '{args.filename}' not found.")
         sys.exit(1)
     except Exception as e:
-        print(f"Error processing file: {e}", file=sys.stderr)
+        import traceback
+
+        print(f"Error processing file: {e}")
+        print(f"  Stanza content:")
+        for i, line in enumerate(stanzas):
+            print(f"    [{i}] {line!r}")
+        traceback.print_exc()
         sys.exit(1)
