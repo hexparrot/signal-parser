@@ -112,6 +112,44 @@ class EnvelopeParser:
 
         return retval
 
+    def to_json(self):
+        def to_dict():
+            return {
+                "sender": {
+                    "name": self.sender.name,
+                    "number": self.sender.number,
+                    "device": self.sender.device,
+                },
+                "recipient": {
+                    "name": self.recipient.name,
+                    "number": self.recipient.number,
+                    "device": self.recipient.device,
+                },
+                "timing": {
+                    "sender_initiated": self.timing.sender_initiated,
+                    "server_received": self.timing.server_received,
+                    "server_delivered": self.timing.server_delivered,
+                    "expiration_started": self.timing.expiration_started,
+                },
+                "body": self.body,
+                "quote": self.quote,
+                "quoted_timestamp": self.quoted_timestamp,
+                "quote_author": {
+                    "name": self.quote_author.name,
+                    "number": self.quote_author.number,
+                },
+                "receipt": {
+                    "delivery": self.receipt.delivery,
+                    "read": self.receipt.read,
+                    "sync": self.receipt.sync,
+                },
+                "confirmed": list(self.confirmed),
+            }
+
+        import json
+
+        return json.dumps(to_dict())
+
     @staticmethod
     def read(envelope_lines):
         import shlex
