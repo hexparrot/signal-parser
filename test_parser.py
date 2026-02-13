@@ -814,6 +814,20 @@ At: 2025-06-20T04:54:28.3040Z
 Call: OFFERING""",
         )
 
+    def test_group_1_str(self):
+        with open("examples/group_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(
+            str(inst),
+            """From: Willy D (+10123456789) [dev 1]
+To: Chimichanga (+19876543210)
+At: 2026-01-30T18:57:18.1450Z
+Group: mealtime (rev 6, UPDATE)""",
+        )
+
     def test_json_call_1_str(self):
         with open("examples/call_1", "r") as f:
             lines = f.readlines()
@@ -873,6 +887,70 @@ Call: OFFERING""",
         self.assertEqual(data["receipt"]["read"], False)
         self.assertEqual(data["receipt"]["sync"], False)
         self.assertEqual(len(data["confirmed"]), 0)
+
+    def test_group_1(self):
+        with open("examples/group_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+
+        self.assertEqual(inst.sender.name, "Willy D")
+        self.assertEqual(inst.sender.number, "+10123456789")
+        self.assertEqual(inst.sender.device, 1)
+        self.assertEqual(inst.timing.sender_initiated, 1769799438145)
+
+        self.assertEqual(inst.recipient.number, "+19876543210")
+        self.assertEqual(inst.recipient.name, "Chimichanga")
+
+        self.assertEqual(inst.timing.server_received, 1769799437284)
+        self.assertEqual(inst.timing.server_delivered, 1770399157758)
+
+        self.assertIsNone(inst.quote)
+        self.assertIsNone(inst.quoted_timestamp)
+        self.assertIsNone(inst.quote_author.name)
+        self.assertIsNone(inst.quote_author.number)
+        self.assertEqual(inst.receipt.delivery, False)
+        self.assertEqual(inst.receipt.read, False)
+        self.assertEqual(inst.receipt.sync, False)
+        self.assertEqual(len(inst.confirmed), 0)
+
+    def test_json_group_1(self):
+        with open("examples/group_1", "r") as f:
+            lines = f.readlines()
+
+        inst = EnvelopeParser.read(lines)
+        data = json.loads(inst.to_json())
+
+        self.assertEqual(data["sender"]["name"], "Willy D")
+        self.assertEqual(data["sender"]["number"], "+10123456789")
+        self.assertEqual(data["sender"]["device"], 1)
+
+        self.assertEqual(data["recipient"]["name"], "Chimichanga")
+        self.assertEqual(data["recipient"]["number"], "+19876543210")
+        self.assertIsNone(data["recipient"]["device"])
+
+        self.assertEqual(data["timing"]["sender_initiated"], 1769799438145)
+
+        self.assertEqual(data["timing"]["server_received"], 1769799437284)
+        self.assertEqual(data["timing"]["server_delivered"], 1770399157758)
+        self.assertEqual(data["timing"]["expiration_started"], None)
+
+        self.assertIsNone(data["body"])
+        self.assertIsNone(data["quote"])
+        self.assertIsNone(data["quoted_timestamp"])
+        self.assertIsNone(data["quote_author"]["name"])
+        self.assertIsNone(data["quote_author"]["number"])
+        self.assertEqual(data["receipt"]["delivery"], False)
+        self.assertEqual(data["receipt"]["read"], False)
+        self.assertEqual(data["receipt"]["sync"], False)
+        self.assertEqual(len(data["confirmed"]), 0)
+
+        self.assertEqual(
+            data["group"]["id"], "QbgrOvpfti8L5bcSDteyYBGiglqvjhlnFq9QnHJ8/fY="
+        )
+        self.assertEqual(data["group"]["name"], "mealtime")
+        self.assertEqual(data["group"]["revision"], 6)
+        self.assertEqual(data["group"]["type"], "UPDATE")
 
 
 if __name__ == "__main__":
