@@ -112,6 +112,44 @@ class EnvelopeParser:
 
         return retval
 
+    def to_json(self):
+        def to_dict():
+            return {
+                "sender": {
+                    "name": self.sender.name,
+                    "number": self.sender.number,
+                    "device": self.sender.device,
+                },
+                "recipient": {
+                    "name": self.recipient.name,
+                    "number": self.recipient.number,
+                    "device": self.recipient.device,
+                },
+                "timing": {
+                    "sender_initiated": self.timing.sender_initiated,
+                    "server_received": self.timing.server_received,
+                    "server_delivered": self.timing.server_delivered,
+                    "expiration_started": self.timing.expiration_started,
+                },
+                "body": self.body,
+                "quote": self.quote,
+                "quoted_timestamp": self.quoted_timestamp,
+                "quote_author": {
+                    "name": self.quote_author.name,
+                    "number": self.quote_author.number,
+                },
+                "receipt": {
+                    "delivery": self.receipt.delivery,
+                    "read": self.receipt.read,
+                    "sync": self.receipt.sync,
+                },
+                "confirmed": list(self.confirmed),
+            }
+
+        import json
+
+        return json.dumps(to_dict())
+
     @staticmethod
     def read(envelope_lines):
         import shlex
@@ -259,28 +297,36 @@ def read_stanzas(filename):
 
 
 if __name__ == "__main__":
+    import argparse
+    import json
     import sys
 
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <filename>")
-        sys.exit(1)
-
-    filename = sys.argv[1]
+    parser = argparse.ArgumentParser(description="Parse Signal message envelopes.")
+    parser.add_argument("filename", help="Path to the Signal log file")
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        dest="json_output",
+        help="Output parsed envelopes as a JSON array",
+    )
+    args = parser.parse_args()
 
     try:
-        stanza_count = 0
-        for stanza in read_stanzas(filename):
-            stanza_count += 1
-            print(f"=== Envelope {stanza_count} ===")
-            out = EnvelopeParser.read(stanza)
-            print(out)
-            print("-" * 50)
+        stanzas = read_stanzas(args.filename)
+        parsed = [EnvelopeParser.read(s) for s in stanzas]
 
-        print(f"Processed {stanza_count} stanzas total.")
+        if args.json_output:
+            print(json.dumps([json.loads(e.to_json()) for e in parsed], indent=2))
+        else:
+            for i, out in enumerate(parsed, 1):
+                print(f"=== Envelope {i} ===")
+                print(out)
+                print("-" * 50)
+            print(f"Processed {len(parsed)} stanzas total.")
 
     except FileNotFoundError:
-        print(f"Error: File '{filename}' not found.")
+        print(f"Error: File '{args.filename}' not found.", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        print(f"Error processing file: {e}")
+        print(f"Error processing file: {e}", file=sys.stderr)
         sys.exit(1)
