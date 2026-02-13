@@ -297,28 +297,36 @@ def read_stanzas(filename):
 
 
 if __name__ == "__main__":
+    import argparse
+    import json
     import sys
 
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <filename>")
-        sys.exit(1)
-
-    filename = sys.argv[1]
+    parser = argparse.ArgumentParser(description="Parse Signal message envelopes.")
+    parser.add_argument("filename", help="Path to the Signal log file")
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        dest="json_output",
+        help="Output parsed envelopes as a JSON array",
+    )
+    args = parser.parse_args()
 
     try:
-        stanza_count = 0
-        for stanza in read_stanzas(filename):
-            stanza_count += 1
-            print(f"=== Envelope {stanza_count} ===")
-            out = EnvelopeParser.read(stanza)
-            print(out)
-            print("-" * 50)
+        stanzas = read_stanzas(args.filename)
+        parsed = [EnvelopeParser.read(s) for s in stanzas]
 
-        print(f"Processed {stanza_count} stanzas total.")
+        if args.json_output:
+            print(json.dumps([json.loads(e.to_json()) for e in parsed], indent=2))
+        else:
+            for i, out in enumerate(parsed, 1):
+                print(f"=== Envelope {i} ===")
+                print(out)
+                print("-" * 50)
+            print(f"Processed {len(parsed)} stanzas total.")
 
     except FileNotFoundError:
-        print(f"Error: File '{filename}' not found.")
+        print(f"Error: File '{args.filename}' not found.", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        print(f"Error processing file: {e}")
+        print(f"Error processing file: {e}", file=sys.stderr)
         sys.exit(1)
